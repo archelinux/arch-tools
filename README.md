@@ -31,3 +31,15 @@ Use `sudo arche-rollback PACKAGE` for a specific package with a known-good older
 ## Install on plain Arch
 
 Install `base-devel` and Git, then clone this repository. In the corresponding directory under `aur/`, inspect the PKGBUILD and run `makepkg -si` as your regular user. Runtime dependencies come from Arch repositories. On archelinux, use the signed distro repository for the packages shipped by the distro.
+
+## Updating an AUR package
+
+Run the plain Arch packaging checks for a new release. Each `aur/<package>` directory contains only the files that belong in that AUR Git repository. From a clean checkout, split the recipe history and keep a copy of the exact packaging branch on GitHub:
+
+```sh
+pkg=arche-waybar-github
+revision=$(git subtree split --prefix="aur/$pkg" HEAD)
+git push origin "$revision:refs/heads/aur/$pkg"
+```
+
+Use an AUR maintainer account with its public SSH key registered. Fetch the AUR repository before pushing the recipe branch. If the remote has history, check that the update is a fast-forward. A preexisting package may have a different maintainer. Inspect that package and coordinate ownership before uploading. The AUR receives the recipe, checksum and .SRCINFO. GitHub hosts the released source. The [installation guide](https://archelinux.github.io/archelinux.org/wiki/arch-tools.html) includes Waybar configuration and authentication.
