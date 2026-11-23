@@ -1,0 +1,27 @@
+name: Build on Arch Linux
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and install all recipes
+        shell: bash
+        run: |
+          set -euo pipefail
+          pacman -Syu --needed --noconfirm github-cli python
+          python -m unittest discover -s tests
+          useradd -m builder
+          cp -r aur /home/builder/
+          chown -R builder:builder /home/builder/aur
+          for recipe in /home/builder/aur/*; do
+            (cd "$recipe"
+             runuser -u builder -- makepkg --noconfirm
+             runuser -u builder -- makepkg --printsrcinfo | diff - .SRCINFO)
+          done
+          pacman -U --noconfirm /home/builder/aur/*/*.pkg.tar.zst
+          runuser -u builder -- env -u GH_TOKEN -u GITHUB_TOKEN arche-waybar-github | python -c 'import json,sys; assert json.load(sys.stdin)["class"] == "auth-required"'
+          for mode in disk gpu vpn; do arche-waybar-status "$mode" | python -m json.tool; done
