@@ -23,5 +23,5 @@ jobs:
              runuser -u builder -- makepkg --printsrcinfo | diff - .SRCINFO)
           done
           pacman -U --noconfirm /home/builder/aur/*/*.pkg.tar.zst
-          runuser -u builder -- env -u GH_TOKEN -u GITHUB_TOKEN arche-waybar-github | python -c 'import json,sys; assert json.load(sys.stdin)["class"] == "auth-required"'
+          runuser -u builder -- env -i HOME=/home/builder PATH=/usr/bin arche-waybar-github | python -c 'import json,sys; assert json.load(sys.stdin)["class"] == "auth-required"'
           for mode in disk gpu vpn; do arche-waybar-status "$mode" | python -m json.tool; done
