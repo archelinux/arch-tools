@@ -2,11 +2,12 @@
 
 These three commands can run on a plain Arch Linux system. Their original implementations ship with [archelinux](https://github.com/archelinux/archelinux). The source is licensed under GPL-3.0-only.
 
-| Command | Purpose |
+| Component | Purpose |
 | --- | --- |
 | `arche-waybar-github` | Show unread GitHub pull requests and issues in Waybar using the current user's GitHub CLI session. |
 | `arche-waybar-status disk\|vpn\|gpu` | Show low disk space, active VPNs or GPU readings as Waybar JSON. Each indicator hides when it has nothing to report. |
 | `arche-rollback PACKAGE` | Select the newest cached version older than the installed package and reinstall it with pacman. Reads the cache directories from pacman.conf. |
+| `neovim-archevim` | The distro’s Neovim colorscheme and matching lualine theme. Select it with `:colorscheme archevim`. |
 
 ## Waybar
 

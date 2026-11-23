@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pacman -Syu --needed --noconfirm github-cli python
+          pacman -Syu --needed --noconfirm github-cli python neovim
           python -m unittest discover -s tests
           useradd -m builder
           cp -r aur /home/builder/
@@ -31,3 +31,5 @@ jobs:
           pacman -U --noconfirm /home/builder/aur/*/*.pkg.tar.zst
           runuser -u builder -- env -i HOME=/home/builder PATH=/usr/bin arche-waybar-github | python -c 'import json,sys; assert json.load(sys.stdin)["class"] == "auth-required"'
           for mode in disk gpu vpn; do arche-waybar-status "$mode" | python -m json.tool; done
+          install -m644 tests/theme.lua /home/builder/test-theme.lua
+          runuser -u builder -- nvim --headless -u NONE -i NONE -l /home/builder/test-theme.lua
